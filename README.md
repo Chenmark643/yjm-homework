@@ -1,125 +1,104 @@
-# Stock Market Analysis: 2016-2026
+# Stock Data Analysis Tool
+## Track 4: Interactive Data Analysis Tool
 
-## Interactive Data Analysis Tool
+### Project Overview
 
-**Author:** Yao Jiamei  
-**Course:** ACC102 - Mini Assignment  
-**Track:** Track 4 - Interactive Data Analysis Tool  
-**Date:** April 2026
+This is a simple stock data analysis tool designed for educational purposes. 
+It allows users to explore stock market data, view price trends, and understand 
+basic financial metrics through an interactive web interface.
 
----
+### Target Users
 
-## Project Overview
+- Beginner investors who want to learn about stock market data
+- Students studying finance and economics
+- Anyone interested in understanding stock price movements
 
-This project analyzes stock market performance of four major technology companies (Apple, Microsoft, Google, Amazon) from 2016 to 2026. It provides an interactive tool for retail investors and business students to understand stock market trends.
+### Features
 
-### Target Audience
-- Retail investors interested in tech stocks
-- Business students learning about stock market analysis
-- Anyone who wants to understand long-term stock performance
+- Interactive stock price charts
+- Trading volume visualization
+- Moving average calculations
+- Historical data tables (sortable)
+- Statistical summary
+- Data export functionality
 
----
+### How to Use
 
-## Files in This Repository
+#### Prerequisites
 
-| File | Description |
-|------|-------------|
-| `stock_analysis_notebook.ipynb` | Main Jupyter notebook with complete analysis |
-| `README.md` | This file - project documentation |
-| `stock_prices.png` | Stock prices visualization |
-| `apple_moving_averages.png` | Apple with moving averages |
-| `performance_comparison.png` | Normalized performance comparison |
-| `volatility_comparison.png` | Volatility analysis |
+Make sure you have Python 3.8 or higher installed.
 
----
+#### Installation
 
-## Data Source
+1. Open your terminal or command prompt
 
-- **Source:** Yahoo Finance (via yfinance library)
-- **Date Accessed:** April 16, 2026
-- **Time Period:** January 1, 2016 - April 16, 2026
-- **Stocks Analyzed:**
-  - Apple Inc. (AAPL)
-  - Microsoft Corporation (MSFT)
-  - Alphabet Inc. (GOOGL)
-  - Amazon.com Inc. (AMZN)
-
----
-
-## Requirements
-
-To run this notebook, you need:
-
-```
-pandas
-numpy
-matplotlib
-yfinance
-jupyter
-```
-
-### Installation
-
-```bash
-pip install pandas numpy matplotlib yfinance jupyter
-```
-
----
-
-## How to Use
-
-1. Clone this repository or download the files
-2. Open terminal and navigate to the folder
-3. Run Jupyter Notebook:
-   ```bash
-   jupyter notebook stock_analysis_notebook.ipynb
+2. Navigate to the project folder:
    ```
-4. Run each cell to see the analysis
+   cd ACC102_Stock_Analysis
+   ```
 
----
+3. Install the required packages:
+   ```
+   pip install -r requirements.txt
+   ```
 
-## Key Features
+#### Running the Application
 
-1. **Data Loading:** Downloads real stock data from Yahoo Finance
-2. **Data Cleaning:** Handles missing values
-3. **Statistics:** Calculates mean, std, min, max
-4. **Visualization:** Creates multiple charts
-5. **Moving Averages:** Shows 50-day and 200-day averages
-6. **Performance Comparison:** Normalizes prices for comparison
-7. **Volatility Analysis:** Calculates and compares risk
+After installation, run the following command:
 
----
+```
+streamlit run app.py
+```
 
-## Key Findings
+The application will open in your default web browser at `http://localhost:8501`
 
-1. All four tech stocks showed significant growth from 2016 to 2026
-2. Moving averages help identify long-term trends
-3. Higher returns often come with higher volatility
-4. Technology sector performed well over the 10-year period
+#### Using the Tool
 
----
+1. Enter a US stock ticker symbol (e.g., AAPL, MSFT, TSLA)
+2. Select the date range you want to analyze
+3. Choose display options (volume, moving averages)
+4. Explore the interactive charts and data tables
+5. Download data if needed
 
-## Limitations
+### Project Structure
 
-1. Only 4 stocks from tech sector analyzed
-2. Past performance does not guarantee future results
-3. Analysis is simplified for educational purposes
-4. Does not include dividends or stock splits
-5. No risk-adjusted return metrics calculated
+```
+ACC102_Stock_Analysis/
+├── app.py              # Main Streamlit application
+├── analysis.py         # Data analysis functions
+├── requirements.txt    # Python package dependencies
+├── README.md          # This file
+└── Stock_Analysis_Demo.mp4   # Demo video (submit separately)
+```
 
----
+### Data Source
 
-## AI Disclosure
+Stock data is obtained from Yahoo Finance through the yfinance library.
+Data is for educational purposes only and should not be used for actual 
+investment decisions.
 
-AI tools (Claude) were used to:
-- Help with code structure
-- Debug some errors
-- Improve documentation
+### Limitations
 
-All analysis and interpretation are my own work.
+- Data is limited to US stocks
+- Historical data availability varies by ticker
+- Real-time data is not available (1-2 day delay)
+- No predictive or forecasting capabilities
 
----
+### Future Improvements
 
-## License
+- Add more technical indicators
+- Include fundamental analysis features
+- Add stock comparison functionality
+- Support for more international markets
 
-This project is for educational purposes only. Not financial advice.
+### Author
+
+Student Name: [Your Name]
+Student ID: [Your ID]
+Date: April 2026
+
+### Acknowledgments
+
+- Yahoo Finance for providing stock data
+- Streamlit for the web framework
+- XJTLU ACC102 Course Materials

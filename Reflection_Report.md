@@ -1,88 +1,164 @@
-# Reflection Report: Stock Market Analysis 2016-2026
+# Reflection Report
+## ACC102 Python Data Product Assignment
 
-**Student Name:** Yao Jiamei  
-**Student ID:** (Your Student ID)  
-**Track:** Track 4 - Interactive Data Analysis Tool  
+**Student Name:** [Your Name]
+**Student ID:** [Your ID]
 **Date:** April 2026
 
 ---
 
 ## 1. Analytical Problem and Target Audience
 
-The analytical problem I chose is to analyze the stock performance of four major technology companies (Apple, Microsoft, Google, and Amazon) from 2016 to 2026. My target audience is retail investors and business students who want to understand long-term stock market trends. I chose this topic because technology stocks have been very important in the past decade, and many people are interested in investing in them. However, most people do not have deep financial knowledge, so I wanted to create a simple analysis tool that can help them understand the basic trends.
+The analytical problem I aimed to address is the difficulty that beginner investors and students face when trying to understand and interpret raw stock market data. Many financial data platforms present overwhelming amounts of information without proper context or visualization, making it challenging for newcomers to extract meaningful insights.
 
-## 2. Dataset Selection
+My target audience consists of:
+- Economics and finance students learning about stock markets
+- Beginner investors who want to understand basic stock analysis
+- Anyone interested in learning how to work with financial data using Python
 
-I selected Yahoo Finance as my data source because it is free, reliable, and easy to access. The yfinance library allows me to download historical stock data directly into Python. I chose the time period from January 1, 2016 to April 16, 2026, which is about 10 years. I selected four stocks: Apple (AAPL), Microsoft (MSFT), Google (GOOGL), and Amazon (AMZN). These companies are well-known and have been leaders in the technology sector. The data was accessed on April 16, 2026.
+---
+
+## 2. Dataset Description and Selection Rationale
+
+**Dataset:** Stock price data from Yahoo Finance
+
+**Data Source:** Yahoo Finance (via yfinance Python library)
+
+**Date Accessed:** April 2026
+
+**Selection Rationale:**
+I chose this dataset because:
+1. Stock data is highly relevant to my Economics and Finance program
+2. Yahoo Finance provides reliable, free access to historical stock data
+3. The data structure (OHLCV format) is ideal for learning data analysis techniques
+4. Stock analysis is a practical application that combines financial knowledge with technical skills
+
+The dataset includes:
+- Date
+- Open, High, Low, Close prices
+- Volume (trading activity)
+
+---
 
 ## 3. Python Methods Used
 
-In this project, I used several basic Python libraries:
-- **pandas**: for data manipulation and analysis. I used it to create DataFrames, calculate statistics, and handle missing values.
-- **numpy**: for numerical calculations, such as calculating volatility.
-- **matplotlib**: for data visualization. I created line charts, bar charts, and saved them as PNG files.
-- **yfinance**: for downloading stock data from Yahoo Finance.
+Throughout this project, I used several Python libraries and techniques:
 
-I also used some basic calculations like percentage change, moving averages, and standard deviation. The moving averages help smooth out daily price fluctuations and show the overall trend more clearly. The volatility calculation shows how risky each stock is.
+### Data Collection
+- **yfinance**: To download historical stock data from Yahoo Finance
+- Handling date ranges and data retrieval
 
-## 4. Main Insights
+### Data Processing
+- **pandas**: For data manipulation and analysis
+- Handling missing values
+- Calculating returns and moving averages
+- DataFrame operations
 
-From my analysis, I found several interesting insights:
+### Data Visualization
+- **matplotlib** and **plotly**: For creating charts and graphs
+- Line charts for price trends
+- Candlestick charts for price patterns
+- Bar charts for volume analysis
 
-First, all four tech stocks showed significant growth over the 10-year period. This suggests that investing in quality tech companies for the long term could be a good strategy.
-
-Second, by comparing normalized prices, I could see which stock performed the best. This comparison is helpful because it removes the effect of different starting prices.
-
-Third, I calculated volatility and found that stocks with higher returns often have higher volatility. This is consistent with the risk-return trade-off concept I learned in my finance class.
-
-Fourth, the moving averages chart for Apple shows how technical indicators can help identify trends. When the price is above the moving average, it usually means the stock is in an uptrend.
-
-## 5. Limitations and Reliability Issues
-
-There are several limitations in my analysis:
-
-1. **Limited scope**: I only analyzed 4 stocks from the tech sector. A more comprehensive analysis would include stocks from different sectors.
-
-2. **Simplified metrics**: I only calculated basic statistics and did not include more advanced metrics like Sharpe ratio or beta.
-
-3. **No dividends**: My analysis only considered stock price changes and did not include dividends, which are an important part of total returns.
-
-4. **No market context**: I did not compare the stocks to market indices like S&P 500, so we don't know if they outperformed the market.
-
-5. **Yahoo Finance reliability**: Although Yahoo Finance is generally reliable, the data might have minor errors or delays.
-
-For improvements, I could add more stocks, include dividends, add market comparison, and calculate risk-adjusted returns.
-
-## 6. My Contribution and Learning
-
-I did most of the work myself, including:
-- Choosing the topic and stocks
-- Designing the analysis structure
-- Writing the Python code
-- Creating visualizations
-- Interpreting the results
-- Writing this reflection
-
-I used Claude (AI assistant) to help me with some coding problems when I got stuck, especially with error messages I didn't understand. I also got help with organizing the README file. However, all the analysis ideas and interpretations are my own.
-
-Through this assignment, I learned:
-- How to use Python libraries for financial data analysis
-- How to download real stock data from Yahoo Finance
-- How to create meaningful visualizations
-- The importance of data cleaning and handling missing values
-- How to interpret stock performance and volatility
-
-This project helped me understand that even simple Python skills can create useful analysis tools. I also learned that presenting data in a clear and visual way is very important for communication.
+### Interactive Interface
+- **Streamlit**: To create an interactive web application
+- User input widgets
+- Real-time data updates
+- Interactive charts
 
 ---
 
-**AI Disclosure:**
+## 4. Main Insights and Outputs
 
-- **Tool:** Claude (Anthropic)
-- **Version:** Claude 3.5
-- **Date Accessed:** April 2026
-- **Usage:** Helped debug code errors, improved README structure, and provided suggestions for organizing the notebook. All analysis and interpretation are my own work.
+Through this analysis, I developed an interactive stock analysis tool that provides:
+
+1. **Price Visualization**: Interactive charts showing stock price movements over time
+
+2. **Technical Indicators**: Moving averages that help identify trends (20-day and 50-day MA)
+
+3. **Statistical Summary**: Daily returns, volatility, and other key metrics
+
+4. **Trading Volume Analysis**: Understanding market activity through volume charts
+
+5. **Data Export**: Ability to download data for further analysis
+
+Key learning points:
+- How to collect and process financial data
+- Understanding stock price patterns
+- Basic technical analysis concepts
+- Building interactive data tools with Python
 
 ---
 
-*Word Count: 698*
+## 5. Limitations, Reliability Issues, and Improvements
+
+### Limitations:
+1. **Data Source**: Yahoo Finance data has a 1-2 day delay for non-premium users
+2. **Scope**: Analysis is limited to US stocks only
+3. **No Real-Time Data**: Cannot perform real-time trading analysis
+4. **Technical Analysis Only**: No fundamental analysis included
+
+### Reliability Issues:
+1. Stock data accuracy depends on the data provider
+2. Moving averages are lagging indicators (historical data only)
+3. Past performance does not guarantee future results
+
+### Possible Improvements:
+1. Add more technical indicators (RSI, MACD, Bollinger Bands)
+2. Include fundamental analysis features
+3. Add stock comparison functionality
+4. Support for international markets
+5. Add predictive modeling using machine learning
+
+---
+
+## 6. Personal Contribution and Learning
+
+### What I Did:
+1. **Problem Definition**: Identified the need for accessible stock analysis tools for beginners
+2. **Data Collection**: Set up data retrieval from Yahoo Finance
+3. **Analysis Development**: Created Python scripts for data analysis
+4. **Visualization**: Built interactive charts and dashboards
+5. **Testing**: Verified the tool works correctly with various stock tickers
+
+### What I Learned:
+1. **Python Skills**: Improved my understanding of pandas, matplotlib, and Streamlit
+2. **Financial Knowledge**: Applied theoretical knowledge from my program to real data
+3. **Data Analysis Process**: Learned the workflow from data collection to insight generation
+4. **Problem Solving**: Debugged issues with data retrieval and visualization
+5. **Technical Communication**: Learned to explain technical concepts clearly
+
+### Challenges Faced:
+1. Understanding the OHLCV data structure
+2. Debugging Streamlit application issues
+3. Ensuring charts display correctly with different date ranges
+4. Managing API rate limits from Yahoo Finance
+
+### How I Overcame:
+1. Researched documentation for each library
+2. Tested with multiple stock examples
+3. Used print statements for debugging
+4. Asked for help when needed
+
+---
+
+## 7. AI Use Disclosure
+
+In completing this assignment, I used AI tools as follows:
+
+**AI Tool Used:** [Specify if applicable, e.g., ChatGPT]
+**Version:** [Version if available]
+**Access Date:** [Date]
+**Purpose:** [What the AI was used for - e.g., debugging, syntax help, explaining concepts]
+
+**Note:** All code was written and understood by me. AI was used only for troubleshooting and clarification of concepts. The final submission represents my own work and understanding of the material.
+
+---
+
+## Conclusion
+
+This project helped me understand how Python can be applied to solve real-world financial analysis problems. I learned that effective data analysis requires not just technical skills, but also domain knowledge and attention to user needs. The experience has strengthened my interest in combining finance and technology, and I plan to continue developing my skills in this area.
+
+---
+
+*Word Count: Approximately 750 words*

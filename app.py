@@ -1,188 +1,222 @@
-# app.py
-# Stock Market Analysis Streamlit App
-# Author: Yao Jiamei
-# ACC102 Mini Assignment - Track 4
+"""
+Stock Data Analysis Dashboard
+Track 4: Interactive Data Analysis Tool
+ACC102 Python Data Product Assignment
+
+This is a simple stock analysis tool that allows users to explore
+stock price data and basic financial metrics.
+"""
 
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+import plotly.express as px
+from datetime import datetime, timedelta
 import yfinance as yf
-from datetime import datetime
-
-# Import analysis functions
-from analysis import (
-    download_stock_data, 
-    calculate_returns, 
-    calculate_moving_averages,
-    calculate_volatility,
-    get_stock_summary
-)
 
 # Page configuration
 st.set_page_config(
-    page_title="Stock Analysis 2016-2026",
+    page_title="Stock Analysis Tool",
     page_icon="📈",
     layout="wide"
 )
 
-# App title
-st.title("📈 Stock Market Analysis: 2016-2026")
-st.subheader("Interactive Data Analysis Tool")
-st.write("**Author:** Yao Jiamei | **Course:** ACC102 | **Track:** 4")
+# Title and introduction
+st.title("📈 Stock Data Analysis Dashboard")
+st.markdown("""
+**Track 4: Interactive Data Analysis Tool**
 
-st.markdown("---")
+This tool allows you to explore stock market data for selected companies.
+Enter a stock ticker symbol and date range to view price trends and basic analysis.
+""")
 
-# Sidebar
-st.sidebar.header("Settings")
-st.sidebar.write("Select stocks and parameters")
+# Sidebar for user inputs
+st.sidebar.header("⚙️ Settings")
 
-# Stock selection
-stock_options = {
-    'Apple': 'AAPL',
-    'Microsoft': 'MSFT', 
-    'Google': 'GOOGL',
-    'Amazon': 'AMZN'
-}
-
-selected_stocks = st.sidebar.multiselect(
-    "Select stocks to analyze:",
-    options=list(stock_options.keys()),
-    default=['Apple', 'Microsoft', 'Google', 'Amazon']
+# Stock ticker input
+ticker = st.sidebar.text_input(
+    "Enter Stock Ticker (e.g., AAPL, MSFT, TSLA)",
+    value="AAPL",
+    help="Enter a valid US stock ticker symbol"
 )
 
-# Date range
-st.sidebar.write("**Date Range:**")
-st.sidebar.write("Jan 1, 2016 - Apr 16, 2026")
+# Date range selection
+end_date = datetime.now()
+start_date = end_date - timedelta(days=365)
 
-# Main content
-st.header("📊 Analysis Dashboard")
+col1, col2 = st.sidebar.columns(2)
+with col1:
+    start_date = st.date_input("Start Date", start_date)
+with col2:
+    end_date = st.date_input("End Date", end_date)
 
-if len(selected_stocks) == 0:
-    st.warning("Please select at least one stock to analyze.")
-else:
-    # Get stock symbols
-    symbols = [stock_options[s] for s in selected_stocks]
-    names = selected_stocks
+# Analysis options
+st.sidebar.markdown("---")
+st.sidebar.subheader("📊 Display Options")
+
+show_volume = st.sidebar.checkbox("Show Trading Volume", value=True)
+show_ma = st.sidebar.checkbox("Show Moving Averages", value=True)
+ma_periods = st.sidebar.slider("MA Period (days)", 5, 50, 20)
+
+# Main content area
+try:
+    # Download stock data
+    with st.spinner("Loading stock data..."):
+        stock = yf.Ticker(ticker)
+        df = stock.history(start=start_date, end=end_date + timedelta(days=1))
     
-    # Download data
-    with st.spinner("Loading data from Yahoo Finance..."):
-        try:
-            close_prices = download_stock_data(
-                symbols, 
-                '2016-01-01', 
-                '2026-04-16'
-            )
-            st.success("Data loaded successfully!")
-        except Exception as e:
-            st.error(f"Error loading data: {e}")
-            st.stop()
-    
-    # Create tabs
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "📈 Price Trends", 
-        "📊 Returns", 
-        "📉 Volatility",
-        "📋 Summary"
-    ])
-    
-    # Tab 1: Price Trends
-    with tab1:
-        st.subheader("Stock Prices Over Time")
+    if df.empty:
+        st.error(f"❌ No data found for ticker '{ticker}'. Please check the ticker symbol.")
+    else:
+        # Display basic information
+        st.subheader(f"📋 Basic Information: {ticker.upper()}")
         
-        fig, ax = plt.subplots(figsize=(12, 6))
-        for i, symbol in enumerate(symbols):
-            ax.plot(close_prices.index, close_prices[symbol], 
-                   label=names[i], linewidth=2)
+        col1, col2, col3, col4 = st.columns(4)
         
-        ax.set_xlabel('Date', fontsize=12)
-        ax.set_ylabel('Price ($)', fontsize=12)
-        ax.set_title('Stock Prices: 2016-2026', fontsize=14)
-        ax.legend(fontsize=10)
-        ax.grid(True, alpha=0.3)
+        # Calculate basic metrics
+        current_price = df['Close'].iloc[-1]
+        previous_close = df['Close'].iloc[-2] if len(df) > 1 else current_price
+        price_change = current_price - previous_close
+        price_change_pct = (price_change / previous_close) * 100
         
-        st.pyplot(fig)
+        high_price = df['High'].max()
+        low_price = df['Low'].min()
+        avg_volume = df['Volume'].mean()
         
-        st.markdown("**Observation:** All tech stocks show strong growth over the 10-year period.")
-    
-    # Tab 2: Returns
-    with tab2:
-        st.subheader("Investment Returns")
-        
-        # Calculate returns
-        returns = calculate_returns(close_prices)
-        st.dataframe(returns.round(2))
-        
-        # Normalized comparison
-        st.subheader("Normalized Performance (Starting at $100)")
-        
-        normalized = pd.DataFrame()
-        for symbol in symbols:
-            normalized[symbol] = (close_prices[symbol] / close_prices[symbol].iloc[0]) * 100
-        
-        fig2, ax2 = plt.subplots(figsize=(12, 6))
-        for i, symbol in enumerate(symbols):
-            ax2.plot(normalized.index, normalized[symbol], 
-                    label=names[i], linewidth=2)
-        
-        ax2.axhline(y=100, color='gray', linestyle='--', alpha=0.5)
-        ax2.set_xlabel('Date', fontsize=12)
-        ax2.set_ylabel('Value ($)', fontsize=12)
-        ax2.set_title('Normalized Performance Comparison', fontsize=14)
-        ax2.legend(fontsize=10)
-        ax2.grid(True, alpha=0.3)
-        
-        st.pyplot(fig2)
-    
-    # Tab 3: Volatility
-    with tab3:
-        st.subheader("Risk Analysis - Volatility")
-        
-        # Calculate volatility
-        volatility = calculate_volatility(close_prices)
-        
-        fig3, ax3 = plt.subplots(figsize=(10, 5))
-        bars = ax3.bar(names, volatility.values, 
-                      color=['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'])
-        
-        ax3.set_xlabel('Stock', fontsize=12)
-        ax3.set_ylabel('Volatility (%)', fontsize=12)
-        ax3.set_title('Annualized Volatility Comparison', fontsize=14)
-        
-        # Add value labels
-        for bar in bars:
-            height = bar.get_height()
-            ax3.text(bar.get_x() + bar.get_width()/2., height,
-                    f'{height:.1f}%', ha='center', va='bottom')
-        
-        st.pyplot(fig3)
-        
-        st.info("💡 Higher volatility means higher risk, but potentially higher returns.")
-    
-    # Tab 4: Summary
-    with tab4:
-        st.subheader("Summary Table")
-        
-        summary = get_stock_summary(close_prices)
-        st.dataframe(summary)
+        with col1:
+            st.metric("Current Price", f"${current_price:.2f}", 
+                     f"{price_change:+.2f} ({price_change_pct:+.2f}%)")
+        with col2:
+            st.metric("52-Week High", f"${high_price:.2f}")
+        with col3:
+            st.metric("52-Week Low", f"${low_price:.2f}")
+        with col4:
+            st.metric("Avg Volume (Daily)", f"{avg_volume:,.0f}")
         
         st.markdown("---")
-        st.subheader("Key Insights")
         
-        st.markdown("""
-        1. **Overall Growth:** All tech stocks showed significant growth over 10 years.
+        # Price chart
+        st.subheader("📈 Price Chart")
         
-        2. **Risk-Return:** Higher volatility stocks often have higher returns.
+        # Create figure
+        fig = go.Figure()
         
-        3. **Long-term Trend:** Technology sector performed well historically.
+        # Candlestick chart
+        fig.add_trace(go.Candlestick(
+            x=df.index,
+            open=df['Open'],
+            high=df['High'],
+            low=df['Low'],
+            close=df['Close'],
+            name="Price"
+        ))
         
-        4. **Investment Insight:** Long-term investing in quality stocks can be rewarding.
-        """)
+        # Add moving average if selected
+        if show_ma:
+            df['MA'] = df['Close'].rolling(window=ma_periods).mean()
+            fig.add_trace(go.Scatter(
+                x=df.index,
+                y=df['MA'],
+                mode='lines',
+                name=f'{ma_periods}-Day MA',
+                line=dict(color='orange', width=2)
+            ))
+        
+        fig.update_layout(
+            title=f"{ticker.upper()} Stock Price",
+            yaxis_title="Price (USD)",
+            xaxis_title="Date",
+            template="plotly_dark",
+            height=500
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Trading volume
+        if show_volume:
+            st.subheader("📊 Trading Volume")
+            fig_vol = px.bar(
+                df,
+                x=df.index,
+                y='Volume',
+                title="Daily Trading Volume",
+                color_discrete_sequence=['#1f77b4']
+            )
+            fig_vol.update_layout(
+                height=300,
+                showlegend=False,
+                template="plotly_dark"
+            )
+            st.plotly_chart(fig_vol, use_container_width=True)
+        
+        # Data table
+        st.subheader("📋 Historical Data")
+        st.markdown("*Click on column headers to sort, or use filters below*")
+        
+        # Format dataframe for display
+        display_df = df.reset_index()
+        display_df['Date'] = display_df['Date'].dt.strftime('%Y-%m-%d')
+        display_df = display_df.round(2)
+        
+        # Interactive data table with sorting
+        st.dataframe(
+            display_df,
+            use_container_width=True,
+            height=400
+        )
+        
+        # Download data button
+        st.markdown("---")
+        csv = df.to_csv()
+        st.download_button(
+            label="📥 Download Data as CSV",
+            data=csv,
+            file_name=f"{ticker}_stock_data.csv",
+            mime="text/csv"
+        )
+        
+        # Statistical summary
+        st.subheader("📊 Statistical Summary")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("**Daily Returns**")
+            returns = df['Close'].pct_change().dropna()
+            returns_df = pd.DataFrame({
+                'Mean Return': [returns.mean()],
+                'Std Deviation': [returns.std()],
+                'Min Return': [returns.min()],
+                'Max Return': [returns.max()]
+            }).T
+            returns_df.columns = ['Value']
+            returns_df['Value'] = returns_df['Value'].apply(lambda x: f"{x:.4f}" if abs(x) < 1 else f"{x:.2f}")
+            st.dataframe(returns_df, use_container_width=True)
+        
+        with col2:
+            st.markdown("**Price Statistics**")
+            price_stats = pd.DataFrame({
+                'Mean Price': [df['Close'].mean()],
+                'Median Price': [df['Close'].median()],
+                'Total Trading Days': [len(df)]
+            }).T
+            price_stats.columns = ['Value']
+            price_stats['Value'] = price_stats['Value'].apply(lambda x: f"${x:.2f}" if 'Price' in price_stats.index else str(int(x)))
+            st.dataframe(price_stats, use_container_width=True)
+
+except Exception as e:
+    st.error(f"❌ An error occurred: {str(e)}")
+    st.info("💡 Please check that the stock ticker is valid and try again.")
 
 # Footer
 st.markdown("---")
 st.markdown("""
-**Data Source:** Yahoo Finance | **Date Accessed:** April 16, 2026
+**How to Use This Tool:**
+1. Enter a valid US stock ticker symbol (e.g., AAPL, MSFT, GOOGL)
+2. Select your desired date range
+3. Explore the interactive charts and data tables
+4. Download the data for further analysis
 
-**Note:** This analysis is for educational purposes only. Not financial advice.
+*Data provided by Yahoo Finance. Data is for educational purposes only.*
 """)
